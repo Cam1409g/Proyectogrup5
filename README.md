@@ -1,2 +1,0 @@
-# Proyectogrup5
-Proyecto

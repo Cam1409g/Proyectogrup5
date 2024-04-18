@@ -342,7 +342,7 @@ def menu():  #Defino el menú primero para que no haya errores de definiciones a
                 if validar(f):
                     break
                 else:
-                    print("Formato de fecha incorrecto (dd/mm/aaaa), tienes que poner algo como 15/09/2021"))
+                    print("Formato de fecha incorrecto (dd/mm/aaaa), tienes que poner algo como 15/09/2021")
             while True:
                 p = input("Valor aproximado de la tarea:")
                 try:

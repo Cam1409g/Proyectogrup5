@@ -3,7 +3,6 @@
 #zip crea un objeto iterable juntando otros objetos iterables de una o varias listas, en este caso lo usamos para comprimir todas las listas.
 #Tambien cuando se imprime nos permite imprmirlo de la siguiente manera:
 #Elemento 0 de listaP con Elemento 0 de listaPre con elemento 0 de status sin problemas.
-
 #Listas
 listaP= []
 listaD= []
@@ -13,7 +12,7 @@ fechas= []
 
 
 def guardarT():
-    with open('TareasP.txt', 'w') as archivo:
+    with open('TareasP.txt', 'w') as archivo: #Esta función nos permite actualizar todo lo que hagamos y aparte crea el archivo
         for f, t, d, p, s in zip(fechas, listaP,listaD,listaPre, status):
             if s == "Pendiente":
                 archivo.write(f"{f},{t},{d},{p}\n")
@@ -26,34 +25,35 @@ def guardarT():
 #Función para leer los datos almacenados
 def Pushup():
     try:
-        with open('TareasP.txt', 'r') as archivo:
+        with open('TareasP.txt', 'r') as archivo: #Se encarga de subir toda la información de los archivo cuando volvemos a ejecutar el programa
             for linea in archivo:
-                partes = linea.strip().split(',', 3)
-                if len(partes) == 4:
+                partes = linea.strip().split(',')
+                if len(partes) == 4: #Acá le definimos cuales partes se muestran en el archivo y cuales son importantes mostrar
                     f, t, d, p = partes
                     listaP.append(t.strip())
                     listaD.append(d.strip())
-                    listaPre.append(float(p.strip().split(':')[-1]))  # Tomar el último elemento después de dividir por ':'
+                    listaPre.append(float(p.strip())) #Le decimos que el precio va a ser un float para que cuando se ejecute de nuevo el programa no tenga problemas.
                     fechas.append(f.strip())
                     status.append("Pendiente")
 
         with open('TareasC.txt', 'r') as archivo:
             for linea in archivo:
-                partes = linea.strip().split(',', 3)
+                partes = linea.strip().split(',')
                 if len(partes) == 4:
                     f, t, d, p = partes
-                    listaP.append(t.strip())
+                    listaP.append(t.strip())#Se agrega la información a cada una de las listas
                     listaD.append(d.strip())
-                    listaPre.append(float(p.strip().split(':')[-1]))
+                    listaPre.append(float(p.strip()))
                     fechas.append(f.strip())
                     status.append("Completada")
                     
     except FileNotFoundError:
-        print("No se encontraron archivos de tareas guardadas, guarde algunas.")
+        print("Seguramente es tu primer inicio, por ello, para empezar a guardar información necesitamos que ingreses tus tareas :)")
+        print("Acá tenemos nuestra interfaz de menú, para agregar nuevas tareas, presiona la opción 1 ;D") #Esto sale cuando los archivos aún no se han creado
 
 
-def pendiente():
-    pendientes = [i+1 for i, s in enumerate(status) if s == "Pendiente"]
+def pendiente(): #El +1 es para que inicie en 1
+    pendientes = [i+1 for i, s in enumerate(status) if s == "Pendiente"] #Estamos creando una lista clasificando todas las tareas en los indices que esten en pendiente
     if pendientes:
         print("---------------------------")
         for i, (f, t, d, p, s) in enumerate(zip(fechas, listaP, listaD, listaPre, status), start=1):
@@ -64,60 +64,69 @@ def pendiente():
         print("No hay tareas pendientes")
         
 #Acá se le pide que si no hay tareas pendientes muestre el mensaje. De caso contrario que siga poniendo las tareas ingresadas en esa lista, el i es el indice y el s es el status.      
-
 def completa():
     pendiente()
     try:
-        tarcom= int(input("Ingrese el número de la tarea completada:"))-1
-        if status[tarcom]=="Completada":
-            print("La tarea ya se marcó como completada")
-        elif 0<=tarcom<len(listaP):
+        tarcom= int(input("Ingrese el número de la tarea completada:"))-1 #Es porque las listas siempre inician desde 0 sí el usuario ingresa 1, le va a restar 1 para que sea correcto
+        if status[tarcom]=="Completada": #El parentesis cuadrado me va a evaluar las tareas en el indice que le dimos
+            print("Mmmm como que ya habpias marcado esa tarea como completada")
+        elif 0<=tarcom<len(listaP): #Tiene que estar igualado a 0 para que el programa reciba correctamente el ejemplo de 1-1= '0' del indice de la tarea
             status[tarcom]="Completada"
             print("Tarea completada con existo!")
             guardarT() #Guarda las tareas despues de marcar como completada
         else:
             print("El número de tarea no existe")
     except (ValueError,IndexError):
-        print("Ingrese un número válido")
+        print("Necesitamos un valor númerico :)")
+
         
 #Función para marcar de nuevo una tarea pendiente
-def wrong():
-     Mos()
-     try:
-        tar= int(input("Ingrese el número de la tarea que debe seguir pendiente:"))-1
-        if status[tar]=="Pendiente":
-            print("La tarea ya se marcó como completada")
-        elif 0<=tar<len(listaP):
-            status[tar]="Pendiente"
-            print("Tarea se marcó como pendiente nuevamente!")
-            guardarT() #Guarda las tareas despues de marcar como completada
-        else:
-            print("El número de tarea no existe")
-     except (ValueError,IndexError):
-        print("Ingrese un número válido")
-        
-      
 def Mos():
-    completadas = False
-    for i, (t, d, p, f, s) in enumerate(zip(listaP, listaD, listaPre, fechas, status), start=1):
-        if s == "Completada":
-            if not completadas:
-                completadas = True
-            print("----TAREAS COMPLETADAS----")
-            print("--------------------------")
-            print(f"{i}. Fecha: {f}, Tarea: {t}, Descripción: {d}, Precio: {p}")
-    if not completadas:
-        print("No hay tareas completadas aún")
+    completadas = [i for i, s in enumerate(status) if s == "Completada"] #Acá es lo mismo que la parte de pendiente
+    if completadas:  
+        print("----TAREAS COMPLETADAS----")
+        print("--------------------------")
+        for i, (t, d, p, f, s) in enumerate(zip(listaP, listaD, listaPre, fechas, status), start=1):
+            if s == "Completada":
+                print(f"{i}. Fecha: {f}, Tarea: {t}, Descripción: {d}, Precio: {p}")
+        print("-------------------------")
+        return True
+    else:
+        print("No hay tareas completadas para poner aquí, que mal")
+        return False
+
+def wrong():
+    completadas = [i for i, s in enumerate(status) if s == "Completada"]
+    if completadas: 
+        print("----TAREAS COMPLETADAS----")
+        for i, (t, d, p, f, s) in enumerate(zip(listaP, listaD, listaPre, fechas, status), start=1):
+            if s == "Completada":
+                print(f"{i}. Fecha: {f}, Tarea: {t}, Descripción: {d}, Precio: {p}")
+        print("-------------------------")
+        try:
+            tar = int(input("Ingrese el número de la tarea que debe seguir pendiente:")) - 1 #Funciona bien para devolver la tarea selecionada a pendiente
+            if tar in completadas:  
+                status[tar] = "Pendiente"  
+                print("Tarea marcada como pendiente nuevamente. Ánimo")
+                guardarT()  # Guardar cambios
+            else:
+                print("El número de tarea no es una tarea completada.")
+        except (ValueError, IndexError): #Esto es para que en caso de que se de un error de estos el programa no se caiga y le avise al usuario que salió mal
+            print("Valor númerico por faaa")
+    else:
+        print("Hey, no hay tareas completadas para marcar como pendiente")
+
         
 #Funciones para los totales de tareas       
 def total_final():
     if not listaPre:
-        print("No hay ningún valor a considerar.")
+        print("No hay ningún valor a considerar")
     else:
         total = sum(listaPre)
         print(f"El costo total de todas las tareas es: {total}")
         costeP()
         costeC()
+        print("¿Y por que tan caro?")
 
 def costeP():
     costep = sum(listaPre[i] for i, s in enumerate(status) if s == "Pendiente")
@@ -129,7 +138,7 @@ def costeC():
 
 #Función para validar las fechas ingresadas       
 def validar(fecha):
-    partesf = fecha.split('/') 
+    partesf = fecha.split('/')#Para que sea valido que se divida por este signo 
     if len(partesf) == 3:
         for parte in partesf:
             if not parte.isdigit(): #Para asegurarse que lo que ingrese el usuario es un valor númerico
@@ -138,7 +147,7 @@ def validar(fecha):
         m = int(partesf[1])
         a = int(partesf[2])
         # Verificar si el día, mes y año están en los rangos adecuados
-        if 1 <= day <= 31 and 1 <= m <= 12 and a >= 2024:
+        if 1 <= day <= 31 and 1 <= m <= 12 and a >= 2000: #2000 solo por el hecho de que esta app también sirve para documentar las tareas
             return True
     
     return False
@@ -148,7 +157,7 @@ def eliminar_tarea_pendiente():
     while True:  # Agregar un bucle para permitir múltiples intentos
         pendientes =[i for i, s in enumerate(status) if s == "Pendiente"]
         if not pendientes: # Comprobar si no hay tareas pendientes
-            print("No hay tareas pendientes para eliminar.")
+            print("Ojo, no hay tareas pendientes para eliminar")
             return
         else:
             print("TAREAS PENDIENTES")
@@ -167,12 +176,12 @@ def eliminar_tarea_pendiente():
                     guardarT()  # Guarda las tareas después de eliminar una
                     break  # Salir del bucle si la tarea se elimina correctamente
                 else:
-                    print("El número de tarea no es válido o la tarea ya está completada.")
+                    print("El número de tarea no es válido o la tarea ya está completada :)")
             except ValueError:
-                print("Ingrese un número válido.")
+                print("Ingrese un número válido por dios")
 #Ordenada
 def obtener_fecha(tarea):
-    return tarea[0]
+    return tarea[0] #El elememto 0 de la lista va a ser la fecha
 
 def listaordenada():
     tareas = [] #Para agregar las dos listas en una 
@@ -185,7 +194,7 @@ def listaordenada():
         for linea in archivo:
             f, t, d, p = linea.strip().split(',')
             tareas.append((f, t, d, p, 'Completada'))
-    tareas_ordenadas = sorted(tareas, key=obtener_fecha)
+    tareas_ordenadas = sorted(tareas, key=obtener_fecha) #La función key sirve para encontrar un dato y lo evalue en el sorted
     if not tareas_ordenadas:
         print("No hay tareas registradas.")
     else:
@@ -202,7 +211,7 @@ def cantidadTotal():
     cantidadTCompletada()
     listaordenada()
     
-def cantidadTPendiente():
+def cantidadTPendiente(): #Estas ya son individuales para cada archivo pidiendo que lea los elementos que tienen
     with open('TareasP.txt', 'r') as archivo:
         contenido = archivo.readlines()
         cantidad_pendientes = len(contenido)
@@ -215,49 +224,93 @@ def cantidadTCompletada():
 
 
 #Función para editar tareas
-def editar():
+def editarpendientes():
     while True:
-        pendientes =[i for i, s in enumerate(status) if s == "Pendiente"]
+        pendientes = [i for i, s in enumerate(status) if s == "Pendiente"]
         if not pendientes:
-            print("No hay tareas pendientes para eliminar.")
+            print("No hay tareas pendientes para editar, ¿por qué seleciona esta opción entonces?.")
             return
         else:
             print("------TAREAS PENDIENTES------")
             pendiente()
         try:
             num = int(input("Ingrese el número de la tarea que desea editar: ")) - 1
-            if 0 <= num < len(listaP):
+            
+            if num in pendientes:  # Verifica si el número de tarea está en la lista de tareas pendientes
                 tarea = input("Nombre de la tarea:")
                 while not tarea.strip():
-                    print("Ingrese un nombre de tarea válido")
+                    print("Ingrese un nombre de tarea válido,¿quien deja las respuestas en blanco?")
                     tarea = input("Nombre de la tarea:")
-                descripcion= input("Descripción de la tarea:")
-                while not nueva_descripcion.strip():
-                    print("Ingrese una descripción válida:")
-                    descripcion= input("Descripción de la tarea:")
+                descripcion = input("Descripción de la tarea:")
+                while not descripcion.strip():
+                    print("Ingrese una descripción válida, necesitamos que pongas algo :(")
+                    descripcion = input("Descripción de la tarea:")
                 fech = input("Ingrese la nueva fecha de la tarea (dd/mm/aaaa): ")
                 while not validar(fech):
-                    print("Formato de fecha incorrecto (dd/mm/aaaa) o se sale de la actualidad (2024).")
+                    print("Formato de fecha incorrecto (dd/mm/aaaa), tienes que poner algo como 15/09/2021")
                     fecha = input("Ingrese la nueva fecha de la tarea (dd/mm/aaaa): ")
                 while True:
-                    precio = float(input("Ingrese el nuevo precio de la tarea: "))
+                    precio = input("Ingrese el nuevo precio de la tarea: ")
                     try:
-                         precio= float(precio)
-                         break
+                        precio = float(precio) #Le especificamos que lo que pedimos es un float
+                        break
                     except ValueError:
-                          print("Por favor, ingrese un valor numérico.")
-                          p = input("Valor aproximado de la tarea:") 
-                listaP[num]= tarea
-                listaD[num]= descripcion
-                fechas[num]= fech
-                listaPre[num]= precio
+                        print("Por favor, ingrese un valor numérico.")#Si no es un float nos avisa
+                listaP[num] = tarea #Lo más destacante, evaluado en el indice que le dimos en num permite que sea reemplazado por los nuevos valores
+                listaD[num] = descripcion
+                fechas[num] = fech
+                listaPre[num] = precio
                 print("Tarea editada exitosamente.")
                 guardarT()
                 break
             else:
-                print("Número de tarea no válido.")
+                print("El número de tarea no es una tarea pendiente")
         except ValueError:
-            print("Por favor, ingrese un número válido para la tarea.")   
+            print("Por favor, ingrese un número válido")
+
+def editarcompletadas():
+    while True:
+        completadas = [i for i, s in enumerate(status) if s == "Completada"]
+        if not completadas:
+            print("No hay tareas completadas para editar.")
+            return
+        else:
+            print("------TAREAS COMPLETADAS------")
+            Mos()
+        try:
+            num = int(input("Ingrese el número de la tarea que desea editar: ")) - 1
+            if num in completadas:
+                tarea = input("Nombre de la tarea:")
+                while not tarea.strip():
+                    print("Ingrese un nombre de tarea válido,¿quien deja las respuestas en blanco?")
+                    tarea = input("Nombre de la tarea:")
+                descripcion = input("Descripción de la tarea:")
+                while not descripcion.strip():
+                    print("Ingrese una descripción válida bichillo, no sea malo :)")
+                    descripcion = input("Descripción de la tarea:")
+                fech = input("Ingrese la nueva fecha de la tarea (dd/mm/aaaa): ")
+                while not validar(fech):
+                     print("Formato de fecha incorrecto (dd/mm/aaaa), tienes que poner algo como 15/09/2021")
+                     fech = input("Ingrese la nueva fecha de la tarea (dd/mm/aaaa): ")
+                while True:
+                    precio = input("Ingrese el nuevo precio de la tarea: ")
+                    try:
+                        precio = float(precio)
+                        break
+                    except ValueError:
+                        print("Por favor, ingrese un valor numérico, es un precio")
+                listaP[num] = tarea
+                listaD[num] = descripcion
+                fechas[num] = fech
+                listaPre[num] = precio
+                print("Tarea editada exitosamente.")
+                guardarT()
+                break
+            else:
+                print("El número de tarea no es una tarea completada")
+        except ValueError:
+            print("Por favor, ingrese un número válido")
+
         
 
 #-----MENU-------
@@ -289,7 +342,7 @@ def menu():  #Defino el menú primero para que no haya errores de definiciones a
                 if validar(f):
                     break
                 else:
-                    print("Formato de fecha incorrecto(dd/mm/aaaa). O el año esta fuera de la actualidad(2024)")
+                    print("Formato de fecha incorrecto (dd/mm/aaaa), tienes que poner algo como 15/09/2021"))
             while True:
                 p = input("Valor aproximado de la tarea:")
                 try:
@@ -297,18 +350,17 @@ def menu():  #Defino el menú primero para que no haya errores de definiciones a
                     break
                
                 except ValueError:
-                    print("Por favor, ingrese un valor numérico.")
-                    p = input("Valor aproximado de la tarea:")    
+                    print("Por favor, ingrese un valor numérico")    
             listaP.append(t)
             listaD.append(d)
             listaPre.append(p)
             fechas.append(f)
             status.append("Pendiente")
             guardarT() #Guarda las tareas al agregar una
-            print("Tarea agregada con éxito")
+            print("Tarea agregada con éxito y sin tropiezos!")
             
         elif menu == '2':
-            if 0==len(listaP) and 0== len(listaPre):
+            if 0==len(listaP):
                 print("Ooops, no existen tareas,crea algunas con la opción 1 del menú")
             else:
                 print("TAREAS PENDIENTES")
@@ -325,27 +377,22 @@ def menu():  #Defino el menú primero para que no haya errores de definiciones a
                            print("Inválido")
                       op=input("Desea completar una tarea?(s/n):").lower()
                            
-        elif menu=='3':
-            if "Completada" in status:
-                Mos()
-                print("-------------------------")
-                op=input("Se equivocó al marcar una tarea completada?(s/n):").lower()
-                completadas= pendientes =[i for i, s in enumerate(status) if s == "Completadas"]
-                if completadas:
-                    while op!='s' or op!='n':
-                      if op=='s':
-                          wrong()
-                      elif op== 'n':
-                           break
-                      else:
-                           print("Inválido")
-                      op=input("Desea completar una tarea?(s/n):").lower()
-                else:
-                    print("No hay tareas completadas")
-            else:
-                print("No hay tareas completadas aún")
-                
-    
+        elif menu == '3':
+             if "Completada" in status:
+                 Mos()
+                 print("-------------------------")
+                 completadas = [i for i, s in enumerate(status) if s == "Completada"]
+                 if completadas:
+                     opcion = input("¿Desea marcar una tarea completada como pendiente? (s/n): ").lower()
+                 if opcion == 's':
+                     wrong()
+                 elif opcion =='n':
+                     print("Oki pues")
+                 else:
+                     print("Esa no es una opción válida")
+             else:
+                 print("No hay tareas completadas aún")
+
         elif menu == '4':
             total_final()
             
@@ -356,14 +403,32 @@ def menu():  #Defino el menú primero para que no haya errores de definiciones a
             cantidadTotal()
             
         elif menu=='7':
-            editar()
+            if 0==len(listaP):
+                print("Ooops, no existen tareas")
+            else:
+                while True:
+                    print("Editar tareas:")
+                    print("a.Pendientes")
+                    print("b.Completadas")
+                    print("c. Dejarlo así")
+                    op=input("Elija una opción:").lower()
+                    if op== 'a':
+                        editarpendientes()
+                    elif op=='b':
+                        editarcompletadas()
+                    elif op=='c':
+                        break
+                    else:
+                        print("Opción inválida :/")
+                    
         elif menu == '8':
-              print("Hasta luego")
+              print("Hasta luego :)")
               print("------------------------")
               guardarT()
               break
         else:
              print("Opción no válida :)")
+       
             
 def respuesta(): #Defino la respuesta.
     respuesta= input("Ingrese una opción(S/N):").lower() #Lower para poder ingresarlo en mayúscula o minúscula
@@ -376,12 +441,12 @@ def respuesta(): #Defino la respuesta.
                 if menu==6:
                     break
         elif respuesta=='n':
-            print("Hasta pronto")
+            print("Pienselo :)")
             print("-----------------------")
             bienvenida()
         else:
-            print("Inválido")
-        respuesta= input("Ingrese una opción(S,N):").lower()
+            print("Omg.. que sorpresa, tan temprano y ya desafiando")
+        respuesta= input("Ingrese una opción(S/N):").lower()
         
 def bienvenida():
     print("Bienvenido a la mejor app de organización de tareas, acá te permitimos gestionar tus tareas y gastos de manera sencilla :)")

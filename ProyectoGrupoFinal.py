@@ -69,7 +69,7 @@ def completa():
     try:
         tarcom= int(input("Ingrese el número de la tarea completada:"))-1 #Es porque las listas siempre inician desde 0 sí el usuario ingresa 1, le va a restar 1 para que sea correcto
         if status[tarcom]=="Completada": #El parentesis cuadrado me va a evaluar las tareas en el indice que le dimos
-            print("Mmmm como que ya habpias marcado esa tarea como completada")
+            print("Mmmm como que ya habias marcado esa tarea como completada")
         elif 0<=tarcom<len(listaP): #Tiene que estar igualado a 0 para que el programa reciba correctamente el ejemplo de 1-1= '0' del indice de la tarea
             status[tarcom]="Completada"
             print("Tarea completada con existo!")

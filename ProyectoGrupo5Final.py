@@ -208,23 +208,36 @@ def listaordenada():
 
 #La estadisticas
 def cantidadTotal():
-    total= len(listaP)
-    print(f"Hay un total de {total} tareas registradas hasta la fecha")
-    cantidadT_Pendiente()
-    cantidadTCompletada()
-    listaordenada()
+    if len(listaP)==0:
+        print("Opa, no hay tareas aún hermano")
+    else:
+        total= len(listaP)
+        print(f"Hay un total de {total} tareas registradas hasta la fecha")
+        cantidadT_Pendiente()
+        cantidadTCompletada()
+        listaordenada()
+    
     
 def cantidadT_Pendiente(): #Estas ya son individuales para cada archivo pidiendo que lea los elementos que tienen
-    with open('TareasP.txt', 'r') as archivo:
-        contenido = archivo.readlines()
-        cantidad_pendientes = len(contenido)
-        print(f"Hay {cantidad_pendientes} tareas pendientes registradas.")
+    try:
+        with open('TareasP.txt', 'r') as archivo:
+            contenido = archivo.readlines()
+            cantidad_pendientes = len(contenido)
+            print(f"Hay {cantidad_pendientes} tareas pendientes registradas.")
+    except FileNotFoundError:
+        print("No has creado nada mijo")
+    
         
 def cantidadTCompletada():
-    with open('TareasC.txt', 'r') as archivo:
-        content = archivo.readlines()
-        completadas = len(content)
-        print(f"Hay {completadas} tareas completadas registradas.")
+    try:
+         with open('TareasC.txt', 'r') as archivo:
+             content = archivo.readlines()
+             completadas = len(content)
+             print(f"Hay {completadas} tareas completadas registradas.")
+    except FileNotFoundError:
+         print("No has creado nada mijo")
+   
+        
 
 #Editar tareas
 def editarcompletadas():
@@ -240,7 +253,7 @@ def editarcompletadas():
             num = int(input("Ingrese el número de la tarea que desea editar: ")) - 1
             if num in completadas:
                 tarea = input("Nombre de la tarea:")
-                while not tarea.strip():
+                while not tarea.strip(): #Evita que el usuario deje el espacio en blamco
                     print("Ingrese un nombre de tarea válido,¿quien deja las respuestas en blanco?")
                     tarea = input("Nombre de la tarea:")
                 descripcion = input("Descripción de la tarea:")

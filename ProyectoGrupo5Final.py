@@ -78,9 +78,8 @@ def completa():
             print("El número de tarea no existe")
     except Exception:
         print("Necesitamos un valor númerico o un número dentro del rango :)")
+ 
 
-        
-#Función para marcar de nuevo una tarea pendiente
 def Mos():
     completadas = [i for i, s in enumerate(status) if s == "Completada"] #Acá es lo mismo que la parte de pendiente
     if completadas:  
@@ -94,7 +93,7 @@ def Mos():
     else:
         print("No hay tareas completadas para poner aquí, que mal")
         return False
-
+#Función para marcar de nuevo una tarea pendiente
 def wrong():
     completadas = [i for i, s in enumerate(status) if s == "Completada"]
     if completadas: 

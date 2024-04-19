@@ -111,7 +111,7 @@ def wrong():
                 guardarT()  # Guardar cambios
             else:
                 print("El número de tarea no es una tarea completada.")
-        except Exception: #Esto es para que en caso de que se de un error de estos el programa no se caiga y le avise al usuario que salió mal
+        except Exception: #Esto es para que en caso de que se de un error de estos el programa no se caiga con cualquier error que se genere
             print("Valor númerico por faaa")
     else:
         print("Hey, no hay tareas completadas para marcar como pendiente")
